@@ -8,7 +8,6 @@ class SentimentAgent(BaseAgent):
     async def process(self, query: str, symbol: str) -> AgentResponse:
         try:
             data = await self.alpha_vantage.fetch(symbol, "NEWS_SENTIMENT")
-            self.logger.info(f"Received news data: {data}")
             
             if not data or "feed" not in data:
                 return AgentResponse(

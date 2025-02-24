@@ -22,8 +22,8 @@ class AgentSelector:
         self.agent_mapping: Dict[str, Type[BaseAgent]] = {
             "technical": TechnicalAgent,
             "sentiment": SentimentAgent,
-            # "risk": RiskAgent,
-            # "portfolio": PortfolioAgent
+            "risk": RiskAgent,
+            "portfolio": PortfolioAgent
         }
         
         # Filter out disabled agents from settings

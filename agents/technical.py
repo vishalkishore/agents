@@ -19,6 +19,8 @@ class TechnicalAgent(BaseAgent):
             if cached_analysis:
                 self.logger.info(f"Cache hit for analysis of {symbol}")
                 return AgentResponse(**cached_analysis)
+            
+            self.logger.info(f"No cache found for {symbol}")
 
             data = await self.alpha_vantage.fetch(symbol, "TIME_SERIES_INTRADAY")
             
