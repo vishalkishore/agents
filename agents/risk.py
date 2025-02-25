@@ -1,5 +1,6 @@
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
+from prompts.prompts import RISK_AGENT_PROMPT
 import pandas as pd
 import numpy as np
 
@@ -24,8 +25,10 @@ class RiskAgent(BaseAgent):
             volatility = returns.std() * np.sqrt(252)
             
             analysis = await self.gemini.analyze(
-                f"Assess risk for {symbol} with annualized volatility {volatility:.2%}:",
-                f"Recent returns:\n{returns.describe()}"
+                RISK_AGENT_PROMPT,
+                symbol=symbol,
+                volatility=volatility,
+                data= f"Recent returns:\n{returns.describe()}"
             )
             
             self.adjust_confidence(True)

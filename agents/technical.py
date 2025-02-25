@@ -5,6 +5,7 @@ from services.cache import CacheService
 import pandas as pd
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
+from prompts.prompts import TECHNICAL_ANALYSIS_PROMPT
 
 class TechnicalAgent(BaseAgent):
     def __init__(self):
@@ -17,7 +18,7 @@ class TechnicalAgent(BaseAgent):
 
             cached_analysis = await self.cache.get(cache_key)
             if cached_analysis:
-                self.logger.info(f"Cache hit for analysis of {symbol}")
+                self.logger.info(f"Cache hit for techinical analysis of {symbol}")
                 return AgentResponse(**cached_analysis)
             
             self.logger.info(f"No cache found for {symbol}")
@@ -85,6 +86,7 @@ class TechnicalAgent(BaseAgent):
 
     async def _analyze_data(self, df: pd.DataFrame, symbol: str) -> str:
         return await self.gemini.analyze(
-            f"Provide technical analysis for {symbol} based on:",
-            df.tail(30).describe().to_string()
+            TECHNICAL_ANALYSIS_PROMPT,
+            symbol=symbol,
+            data=df.tail(30).describe().to_string()
         )

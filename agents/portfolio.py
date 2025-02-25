@@ -1,6 +1,7 @@
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
 import pandas as pd
+from prompts.prompts import PORTFOLIO_AGENT_PROMPT
 
 class PortfolioAgent(BaseAgent):
     def __init__(self):
@@ -27,8 +28,9 @@ class PortfolioAgent(BaseAgent):
             
             # Analyze with Gemini
             analysis = await self.gemini.analyze(
-                f"Provide portfolio optimization advice for {len(symbols)} assets:",
-                f"Correlation Matrix:\n{corr_matrix.to_string()}"
+                PORTFOLIO_AGENT_PROMPT,
+                symbols=len(symbols),
+                data = f"Correlation Matrix:\n{corr_matrix.to_string()}"
             )
             
             self.adjust_confidence(True)

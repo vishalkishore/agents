@@ -3,6 +3,7 @@ import logging
 from core.schemas import AgentResponse
 from core.logging import log_exception
 from services.gemini import GeminiService
+from prompts.prompts import EXPLAIN_PROMPT
 
 class ExplainabilityEngine:
     def __init__(self):
@@ -14,17 +15,8 @@ class ExplainabilityEngine:
             results_str = ""
             for res in results:
                 results_str += f"{res.agent_name} ({res.confidence:.2f}): {str(res.result)[:200]}\n"
-            
-            EXPLAIN_PROMPT = (
-                "Synthesize a comprehensive explanation for the user in plain English.\n"
-                "Instructions:\n"
-                "- Highlight key findings from each analysis perspective.\n"
-                "- Note the confidence levels of each result.\n"
-                "- Mention any potential limitations.\n\n"
-                "Agent Results:\n{results}\n"
-            )
-            prompt = EXPLAIN_PROMPT.format(results=results_str)
-            explanation = await self.gemini.analyze(prompt)
+        
+            explanation = await self.gemini.analyze(EXPLAIN_PROMPT,results=results_str)
             return explanation
         except Exception as e:
             log_exception(self.logger, e, "Explanation generation failed")

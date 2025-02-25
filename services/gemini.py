@@ -1,5 +1,6 @@
 import google.generativeai as genai
 from config.settings import settings
+from collections import defaultdict
 
 class GeminiService:
     def __init__(self):
@@ -9,7 +10,16 @@ class GeminiService:
             generation_config={"response_mime_type": "application/json"}
         )
 
-    async def analyze(self, prompt: str, data: str = None) -> str:
-        full_prompt = f"{prompt}\n\nData:\n{data[:15000]}" if data else prompt
-        response = self.model.generate_content(full_prompt)
-        return response.text
+    async def analyze(self, prompt: str, **kwargs) -> str:
+        try:
+            if kwargs:
+                kwargs = defaultdict(str, kwargs)
+                prompt = prompt.format_map(kwargs)
+            response = self.model.generate_content(prompt)
+            if hasattr(response, 'text'):
+                return response.text
+            else:
+                return str(response)
+                
+        except Exception as e:
+            return f"Error analyzing prompt: {str(e)}"

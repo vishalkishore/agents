@@ -10,6 +10,7 @@ from agents.sentiment import SentimentAgent
 from agents.risk import RiskAgent
 from agents.portfolio import PortfolioAgent
 from config.settings import settings
+from prompts.prompts import AGENT_SELECTOR_PROMPT
 
 class AgentSelector:
     def __init__(self):
@@ -34,21 +35,10 @@ class AgentSelector:
         }
 
     async def select_agents(self, query: str) -> Tuple[List[BaseAgent], str]:
-        """
-        Select appropriate agents based on the query and return initialized instances
-        along with the detected symbol.
-        
-        Args:
-            query (str): User's query text
-            
-        Returns:
-            Tuple[List[BaseAgent], str]: List of initialized agents and detected symbol
-        """
         try:
-            # Construct the prompt for agent selection
+
             prompt = self._build_selection_prompt(query)
             
-            # Get Gemini's analysis
             response_text = await self.gemini.analyze(prompt)
             
             # Parse the response
@@ -59,7 +49,7 @@ class AgentSelector:
             except json.JSONDecodeError as e:
                 log_exception(self.logger, e, "Failed to parse Gemini response")
                 # Fallback to default selection
-                selected_agents = ['technical']  # Always include technical analysis
+                selected_agents = ['technical','sentiment']
                 symbol = self._extract_symbol_fallback(query)
 
             # Validate symbol
@@ -67,7 +57,6 @@ class AgentSelector:
                 symbol = self._extract_symbol_fallback(query)
                 self.logger.warning(f"Using fallback symbol detection: {symbol}")
 
-            # Initialize selected agents
             agents = self._initialize_selected_agents(selected_agents)
             
             self.logger.info(f"Selected agents: {[a.__class__.__name__ for a in agents]} for symbol: {symbol}")
@@ -79,34 +68,8 @@ class AgentSelector:
             return [TechnicalAgent()], "IBM"
 
     def _build_selection_prompt(self, query: str) -> str:
-        """Build the prompt for agent selection"""
         available_agents = list(self.available_agents.keys())
-        
-        prompt = f"""
-        Given a user query, select the appropriate agents to provide a response.
-        Available agents are: {available_agents}
-
-        Please analyze the query and return a JSON object with:
-        1. The stock symbol/ticker mentioned or implied in the query
-        2. A list of relevant agents that should process this query
-
-        Use this exact schema:
-        {{
-            "symbol": "string",  // The stock symbol (e.g., "AAPL", "GOOGL")
-            "selected": ["string"]  // List of selected agents from available agents
-        }}
-
-        Consider these agent specialties:
-        - technical: Technical analysis, price patterns, indicators
-        - sentiment: Market sentiment, news analysis, social media impact
-        - risk: Risk assessment, volatility analysis, market conditions
-        - portfolio: Portfolio impact, diversification, position sizing
-
-        Query: {query}
-
-        Respond with ONLY the JSON object, no additional text.
-        """
-        return prompt
+        return AGENT_SELECTOR_PROMPT.format(available_agents=available_agents, query=query)
 
     def _initialize_selected_agents(self, selected_agents: List[str]) -> List[BaseAgent]:
         """Initialize the selected agents"""

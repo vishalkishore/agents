@@ -1,5 +1,6 @@
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
+from prompts.prompts import NEWS_SENTIMENT_PROMPT
 
 class SentimentAgent(BaseAgent):
     def __init__(self):
@@ -20,8 +21,9 @@ class SentimentAgent(BaseAgent):
                         for item in data["feed"][:5]]
             
             analysis = await self.gemini.analyze(
-                f"Summarize market sentiment for {symbol} based on these news headlines:",
-                "\n".join(news_items)
+                NEWS_SENTIMENT_PROMPT,
+                symbol=symbol,
+                news_items = news_items
             )
             
             self.adjust_confidence(True)
