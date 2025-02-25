@@ -1,7 +1,6 @@
 import redis
 import json
 import logging
-from datetime import datetime
 from typing import Optional, Any
 from config.settings import settings
 from core.logging import log_exception
@@ -38,7 +37,7 @@ class CacheService:
             
         try:
             ttl = ttl or settings.CACHE_TTL
-            value_str = json.dumps(value)
+            value_str = json.dumps(value,default=str)
             return self.redis.setex(key, ttl, value_str)
         except Exception as e:
             log_exception(self.logger, e, f"Cache set error for key {key}")

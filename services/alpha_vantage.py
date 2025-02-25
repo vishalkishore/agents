@@ -35,13 +35,15 @@ class AlphaVantageService:
             self.logger.info(f"Fetching {function} data for {symbol}")
             response = requests.get(self.base_url, params=params)
             data = response.json()
+
+            self.logger.info(f"Received {data} data for {symbol}")
             
             if "Error Message" in data:
                 raise ValueError(data["Error Message"])
             
             if "Information" in data and "rate limit" in data["Information"].lower():
                 raise ValueError("API rate limit exceeded")
-            
+            self.logger.info(f"Setting cache for {symbol} {function}")
             await self.cache.set(cache_key, data)
             
             return data
