@@ -3,13 +3,18 @@ from core.schemas import AgentResponse
 from prompts.prompts import RISK_AGENT_PROMPT
 import pandas as pd
 import numpy as np
+from typing import Any, Dict
 
 class RiskAgent(BaseAgent):
     def __init__(self):
         super().__init__("RiskAgent")
     
-    async def process(self, query: str,symbol: str) -> AgentResponse:
+    async def process(self, query: str,agent_data: Dict[str,Any]) -> AgentResponse:
         try:
+            symbol = agent_data.get("symbol")
+            if not symbol:
+                raise ValueError("Missing 'symbol' key in agent_data")
+            
             data = await self.alpha_vantage.fetch(symbol, "TIME_SERIES_INTRADAY")
             
             if not data:

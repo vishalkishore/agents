@@ -36,16 +36,13 @@ class AgentSelector:
 
     async def select_agents(self, query: str) -> Tuple[List[BaseAgent], str]:
         try:
-
             prompt = self._build_selection_prompt(query)
-            
             response_text = await self.gemini.analyze(prompt)
-            
             # Parse the response
             try:
                 response = json.loads(response_text)
                 selected_agents = response.get('selected', [])
-                symbol = response.get('symbol', '')
+                symbol = response.get('symbol', '').strip().upper()
             except json.JSONDecodeError as e:
                 log_exception(self.logger, e, "Failed to parse Gemini response")
                 # Fallback to default selection
@@ -58,9 +55,9 @@ class AgentSelector:
                 self.logger.warning(f"Using fallback symbol detection: {symbol}")
 
             agents = self._initialize_selected_agents(selected_agents)
-            
+            response['symbol'] = symbol
             self.logger.info(f"Selected agents: {[a.__class__.__name__ for a in agents]} for symbol: {symbol}")
-            return agents, symbol
+            return agents, response
 
         except Exception as e:
             log_exception(self.logger, e, "Agent selection failed")
@@ -68,8 +65,8 @@ class AgentSelector:
             return [TechnicalAgent()], "IBM"
 
     def _build_selection_prompt(self, query: str) -> str:
-        available_agents = list(self.available_agents.keys())
-        return AGENT_SELECTOR_PROMPT.format(available_agents=available_agents, query=query)
+        available_agents = list(self.available_agents.keys()) if self.available_agents else []
+        return AGENT_SELECTOR_PROMPT.format(available_agents=", ".join(available_agents), query=query)
 
     def _initialize_selected_agents(self, selected_agents: List[str]) -> List[BaseAgent]:
         """Initialize the selected agents"""

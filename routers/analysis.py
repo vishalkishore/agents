@@ -18,12 +18,12 @@ async def process_query(query: UserQuery):
     
     try:
 
-        agents, symbol = await selector.select_agents(query.text)
+        agents, response = await selector.select_agents(query.text)
         if not agents:
             raise HTTPException(status_code=400, detail="No suitable agents found for query")
 
         # Process query with selected agents
-        agent_tasks = [agent.process(query.text, symbol) for agent in agents]
+        agent_tasks = [agent.process(query.text, response) for agent in agents]
         import asyncio
         results = await asyncio.gather(*agent_tasks)
 

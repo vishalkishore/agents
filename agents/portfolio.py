@@ -2,12 +2,13 @@ from agents.base import BaseAgent
 from core.schemas import AgentResponse
 import pandas as pd
 from prompts.prompts import PORTFOLIO_AGENT_PROMPT
+from typing import Any, Dict
 
 class PortfolioAgent(BaseAgent):
     def __init__(self):
         super().__init__("PortfolioAgent")
     
-    async def process(self, query: str,symbol: str) -> AgentResponse:
+    async def process(self, query: str,agent_data: Dict[str,Any]) -> AgentResponse:
         try:
             symbols = [word for word in query.split() if word.isupper() and len(word) < 5]
             if not symbols:

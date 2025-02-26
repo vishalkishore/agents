@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
 from prompts.prompts import NEWS_SENTIMENT_PROMPT
@@ -6,8 +7,12 @@ class SentimentAgent(BaseAgent):
     def __init__(self):
         super().__init__("SentimentAgent")
     
-    async def process(self, query: str, symbol: str) -> AgentResponse:
+    async def process(self, query: str, agent_data: Dict[str,Any]) -> AgentResponse:
         try:
+            symbol = agent_data.get("symbol")
+            if not symbol:
+                raise ValueError("Missing 'symbol' key in agent_data")
+            
             data = await self.alpha_vantage.fetch(symbol, "NEWS_SENTIMENT")
             
             if not data or "feed" not in data:

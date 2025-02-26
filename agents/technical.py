@@ -1,4 +1,5 @@
 import pandas as pd
+from typing import Any, Dict
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
 from services.cache import CacheService
@@ -12,8 +13,12 @@ class TechnicalAgent(BaseAgent):
         super().__init__("TechnicalAgent")
         self.cache = CacheService()
 
-    async def process(self, query: str, symbol: str) -> AgentResponse:
+    async def process(self, query: str, agent_data: Dict[str,Any]) -> AgentResponse:
         try:
+            symbol = agent_data.get("symbol")
+            if not symbol:
+                raise ValueError("Missing 'symbol' key in agent_data")
+            
             cache_key = self.cache.build_key("technical_analysis", symbol, query)
 
             cached_analysis = await self.cache.get(cache_key)
@@ -61,11 +66,18 @@ class TechnicalAgent(BaseAgent):
                 '8. split coefficient' : 'split_coefficient'
             }
 
-        df = pd.DataFrame(data["Time Series (5min)"]).T.reset_index()
+        time_series_keys = [key for key in data if key.startswith("Time Series")]
+
+        if not time_series_keys:
+            raise ValueError("Time Series data not found in the input dictionary")
+        time_series_key = time_series_keys[0]
+
+        df = pd.DataFrame(data[time_series_key]).T.reset_index()
         df = df.rename(columns=columns)
         
         numeric_cols = ['open', 'high', 'low', 'close', 'volume']
-        df[numeric_cols] = df[numeric_cols].apply(pd.to_numeric)
+        df[numeric_cols] = df[numeric_cols].apply(pd.to_numeric, errors='coerce')
+        
         df['timestamp'] = pd.to_datetime(df['timestamp'])
         
         df['20ma'] = df['close'].rolling(20).mean()

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Dict, Any
 from services.alpha_vantage import AlphaVantageService
 from services.gemini import GeminiService
 from core.schemas import AgentResponse
@@ -14,7 +15,7 @@ class BaseAgent(ABC):
         self.confidence = 0.9
 
     @abstractmethod
-    async def process(self, query: str, symbol: str) -> AgentResponse:
+    async def process(self, query: str, data: Dict[str,Any]) -> AgentResponse:
         pass
 
     def adjust_confidence(self, success: bool):

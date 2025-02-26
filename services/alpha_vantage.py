@@ -12,7 +12,7 @@ class AlphaVantageService:
         self.logger = logging.getLogger("AlphaVantageService")
         self.cache = CacheService()
 
-    async def fetch(self, symbol: str, function: str) -> Optional[Dict]:
+    async def fetch(self, symbol: str, function: str, extra_params: Optional[Dict] = None) -> Optional[Dict]:
         try:
             self.logger.info(f"Fetching {function} data for {symbol}")
             cache_key = self.cache.build_key("alphavantage", symbol, function)
@@ -29,16 +29,18 @@ class AlphaVantageService:
             }
             
             if function in ["TIME_SERIES_INTRADAY", "TIME_SERIES_DAILY"]:
-                params["interval"] = "5min"
-
+                params.setdefault("interval", "5min")
             if function == "NEWS_SENTIMENT":
-                params["sort"] = "RELEVANCE"
+                params.setdefault("sort", "RELEVANCE")
+
+            if extra_params:
+                params.update(extra_params)
 
             self.logger.info(f"Fetching {function} data for {symbol}")
             response = requests.get(self.base_url, params=params)
             data = response.json()
 
-            self.logger.info(f"Received {data} data for {symbol}")
+            # self.logger.info(f"Received {data} data for {symbol}")
             
             if "Error Message" in data:
                 raise ValueError(data["Error Message"])
