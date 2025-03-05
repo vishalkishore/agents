@@ -1,0 +1,36 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE settings
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Redis files
+dump.rdb
+
+# Local development
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Docker volumes
+redis_data/

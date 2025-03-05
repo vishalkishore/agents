@@ -1,0 +1,42 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Environment files
+.env
+.venv/
+env/
+venv/
+.python-version
+
+# Development/IDE files
+.git/
+.gitignore
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Cache and logs
+*.log
+redis_data/
+dump.rdb
+
+# Documentation
+README.md
+
+# Testing and coverage
+.coverage
+htmlcov/
+
+# Distribution/packaging
+dist/
+build/
+*.egg-info/
