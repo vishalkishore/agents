@@ -22,22 +22,22 @@ class Settings(BaseSettings):
 
 
     AGENT_CONFIGS: Dict[str, Dict] = {
-        "technical": {
+        "TechnicalAgent": {
             "class": "TechnicalAgent",
             "enabled": True,
             "confidence_threshold": 0.5
         },
-        "sentiment": {
+        "SentimentAgent": {
             "class": "SentimentAgent",
             "enabled": True,
             "confidence_threshold": 0.6
         },
-        "risk": {
+        "RiskAgent": {
             "class": "RiskAgent",
             "enabled": True,
             "confidence_threshold": 0.7
         },
-        "portfolio": {
+        "PortfolioAgent": {
             "class": "PortfolioAgent",
             "enabled": True,
             "confidence_threshold": 0.5

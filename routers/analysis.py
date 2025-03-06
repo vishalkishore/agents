@@ -5,6 +5,7 @@ from services.aggregator import ResultAggregator
 from services.explainer import ExplainabilityEngine
 from core.logging import log_execution, log_exception
 import logging
+import asyncio
 
 router = APIRouter()
 logger = logging.getLogger("analysis_router")
@@ -23,8 +24,10 @@ async def process_query(query: UserQuery):
             raise HTTPException(status_code=400, detail="No suitable agents found for query")
 
         # Process query with selected agents
-        agent_tasks = [agent.process(query.text, response) for agent in agents]
-        import asyncio
+        agent_tasks = [
+            asyncio.create_task(agent.process(response["paraphrased_queries"][agent.__class__.__name__], response))
+            for agent in agents
+        ]
         results = await asyncio.gather(*agent_tasks)
 
         processed_results = await aggregator.aggregate(results)

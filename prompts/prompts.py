@@ -21,20 +21,23 @@ Analyze the provided data systematically and draw evidence-based conclusions.
 AGENT_SELECTOR_PROMPT = """
 You are a precision agent selection system for financial analysis.
 
-TASK: Analyze the user query about financial markets and select the most appropriate specialized agents.
+TASK: Analyze the user query about financial markets and select the most appropriate specialized agents. Additionally, for each selected agent, generate a tailored paraphrased query that aligns with that agent's specialization. If the original query already matches an agent's specialization requirements, return the original query for that agent.
 
 Available agents: {available_agents}
 
 INSTRUCTIONS:
-1. Identify the financial instrument, market, or topic (stocks, sectors, indices, etc.)
-2. Determine the time frame of analysis (intraday, short-term, medium-term, long-term)
-3. Select agents based on relevance to both topic and time frame
-4. Return ONLY a clean JSON object with this exact schema:
+1. Identify the financial instrument, market, or topic (stocks, sectors, indices, etc.).
+2. Determine the time frame of analysis (INTRADAY, SHORT_TERM, MEDIUM_TERM, LONG_TERM).
+3. Select agents based on relevance to both the topic and the time frame.
+4. For each selected agent, generate a paraphrased query tailored to its specialization. If the original query does not fits the agent's focus, then use the original query.
+5. Return ONLY a clean JSON object with this exact schema:
+
 {{
     "symbol": "string",  // Stock symbol in uppercase (e.g., "AAPL")
-    "selected": ["string"]  // Array of selected agent names from available agents
-    "timeframe": "string",  // Time horizon (e.g., "INTRADAY", "SHORT_TERM", "LONG_TERM")
-    "query_intent": "string",  // Purpose of query (e.g., "PREDICTIVE", "EXPLANATORY", "COMPARATIVE")
+    "selected": ["string"],  // Array of selected agent names from available agents
+    "timeframe": "string",  // Time horizon (e.g., "INTRADAY", "SHORT_TERM", "MEDIUM_TERM", "LONG_TERM")
+    "query_intent": "string",  // Purpose of query (e.g., "PREDICTIVE", "EXPLANATORY", "COMPARATIVE", "INFORMATIONAL")
+    "paraphrased_queries": {{ "agent_name": "string" }}  // Mapping each selected agent to its tailored paraphrased query
 }}
 
 Time frame guidelines:
@@ -45,9 +48,9 @@ Time frame guidelines:
 
 Agent specializations:
 - technical: Chart patterns, price action, indicators, technical signals (optimal for INTRADAY and SHORT_TERM)
-- sentiment: News analysis, media sentiment, social trends (effective for SHORT to MEDIUM-TERM)
+- sentiment: News analysis, media sentiment, social trends (effective for SHORT to MEDIUM_TERM)
 - risk: Volatility assessment, downside protection, market conditions (relevant across all timeframes)
-- portfolio: Asset allocation, diversification impact, position sizing (optimal for MEDIUM to LONG-TERM)
+- portfolio: Asset allocation, diversification impact, position sizing (optimal for MEDIUM to LONG_TERM)
 
 Query intent guidelines:
 - PREDICTIVE: Forward-looking queries about price movement, performance expectations
@@ -66,6 +69,7 @@ DO NOT:
 
 Response must be ONLY valid parseable JSON.
 """
+
 
 PORTFOLIO_AGENT_PROMPT = """
 Provide comprehensive portfolio optimization advice for the following assets: {symbols}

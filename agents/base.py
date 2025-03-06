@@ -3,13 +3,12 @@ from typing import Dict, Any
 from services.alpha_vantage import AlphaVantageService
 from services.gemini import GeminiService
 from core.schemas import AgentResponse
-from core.logging import log_exception
-import logging
+from core.logging import log_exception, get_agent_logger
 
 class BaseAgent(ABC):
     def __init__(self, agent_name: str):
         self.agent_name = agent_name
-        self.logger = logging.getLogger(agent_name)
+        self.logger = get_agent_logger(agent_name)
         self.alpha_vantage = AlphaVantageService()
         self.gemini = GeminiService()
         self.confidence = 0.9

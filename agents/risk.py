@@ -1,5 +1,6 @@
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
+from core.logging import log_execution
 from prompts.prompts import RISK_AGENT_PROMPT
 import pandas as pd
 import numpy as np
@@ -9,6 +10,7 @@ class RiskAgent(BaseAgent):
     def __init__(self):
         super().__init__("RiskAgent")
     
+    @log_execution
     async def process(self, query: str,agent_data: Dict[str,Any]) -> AgentResponse:
         try:
             symbol = agent_data.get("symbol")

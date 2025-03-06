@@ -6,6 +6,7 @@ from services.cache import CacheService
 import pandas as pd
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
+from core.logging import log_execution
 from prompts.prompts import TECHNICAL_ANALYSIS_PROMPT
 
 class TechnicalAgent(BaseAgent):
@@ -13,7 +14,9 @@ class TechnicalAgent(BaseAgent):
         super().__init__("TechnicalAgent")
         self.cache = CacheService()
 
+    @log_execution
     async def process(self, query: str, agent_data: Dict[str,Any]) -> AgentResponse:
+        self.logger.info(f"Technical analysis agent processing query: {query}")
         try:
             symbol = agent_data.get("symbol")
             if not symbol:

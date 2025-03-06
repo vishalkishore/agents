@@ -21,10 +21,10 @@ class AgentSelector:
     def _initialize_agents(self):
         """Initialize agent mapping based on configuration"""
         self.agent_mapping: Dict[str, Type[BaseAgent]] = {
-            "technical": TechnicalAgent,
-            "sentiment": SentimentAgent,
-            "risk": RiskAgent,
-            "portfolio": PortfolioAgent
+            "TechnicalAgent": TechnicalAgent,
+            "SentimentAgent": SentimentAgent,
+            "RiskAgent": RiskAgent,
+            "PortfolioAgent": PortfolioAgent
         }
         
         # Filter out disabled agents from settings
@@ -48,7 +48,7 @@ class AgentSelector:
                 # Fallback to default selection
                 selected_agents = ['technical','sentiment']
                 symbol = self._extract_symbol_fallback(query)
-
+                
             # Validate symbol
             if not symbol:
                 symbol = self._extract_symbol_fallback(query)

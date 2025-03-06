@@ -1,12 +1,15 @@
 from typing import Any, Dict
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
+from core.logging import log_execution
 from prompts.prompts import NEWS_SENTIMENT_PROMPT
+import time
 
 class SentimentAgent(BaseAgent):
     def __init__(self):
         super().__init__("SentimentAgent")
     
+    @log_execution
     async def process(self, query: str, agent_data: Dict[str,Any]) -> AgentResponse:
         try:
             symbol = agent_data.get("symbol")
@@ -14,7 +17,6 @@ class SentimentAgent(BaseAgent):
                 raise ValueError("Missing 'symbol' key in agent_data")
             
             data = await self.alpha_vantage.fetch(symbol, "NEWS_SENTIMENT")
-            
             if not data or "feed" not in data:
                 return AgentResponse(
                     agent_name=self.agent_name,
@@ -30,6 +32,11 @@ class SentimentAgent(BaseAgent):
                 symbol=symbol,
                 news_items = news_items
             )
+
+            self.logger.info(f"In sleep mode for 5 seconds")
+            import asyncio
+            await asyncio.sleep(5)
+            self.logger.info(f"Awaked from sleep mode")
             
             self.adjust_confidence(True)
             return AgentResponse(

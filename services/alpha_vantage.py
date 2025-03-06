@@ -1,7 +1,7 @@
 import requests
 from typing import Optional, Dict
 import logging
-from core.logging import log_exception
+from core.logging import log_exception, log_execution
 from config.settings import settings
 from services.cache import CacheService
 
@@ -12,6 +12,7 @@ class AlphaVantageService:
         self.logger = logging.getLogger("AlphaVantageService")
         self.cache = CacheService()
 
+    @log_execution
     async def fetch(self, symbol: str, function: str, extra_params: Optional[Dict] = None) -> Optional[Dict]:
         try:
             self.logger.info(f"Fetching {function} data for {symbol}")

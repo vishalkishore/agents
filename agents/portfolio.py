@@ -1,5 +1,6 @@
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
+from core.logging import log_execution
 import pandas as pd
 from prompts.prompts import PORTFOLIO_AGENT_PROMPT
 from typing import Any, Dict
@@ -8,6 +9,7 @@ class PortfolioAgent(BaseAgent):
     def __init__(self):
         super().__init__("PortfolioAgent")
     
+    @log_execution
     async def process(self, query: str,agent_data: Dict[str,Any]) -> AgentResponse:
         try:
             symbols = [word for word in query.split() if word.isupper() and len(word) < 5]
