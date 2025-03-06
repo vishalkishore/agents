@@ -31,7 +31,7 @@ class RiskAgent(BaseAgent):
             returns = df["4. close"].astype(float).pct_change().dropna()
             volatility = returns.std() * np.sqrt(252)
             
-            analysis = await self.gemini.analyze(
+            analysis = await self._query_llm(
                 RISK_AGENT_PROMPT,
                 symbol=symbol,
                 volatility=volatility,

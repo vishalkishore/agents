@@ -30,7 +30,7 @@ class PortfolioAgent(BaseAgent):
             corr_matrix = pd.DataFrame(portfolio_data).corr()
             
             # Analyze with Gemini
-            analysis = await self.gemini.analyze(
+            analysis = await self._query_llm(
                 PORTFOLIO_AGENT_PROMPT,
                 symbols=len(symbols),
                 data = f"Correlation Matrix:\n{corr_matrix.to_string()}"

@@ -27,7 +27,7 @@ class SentimentAgent(BaseAgent):
             news_items = [f"{item['title']} ({item['overall_sentiment_score']})" 
                         for item in data["feed"][:5]]
             
-            analysis = await self.gemini.analyze(
+            analysis = await self._query_llm(
                 NEWS_SENTIMENT_PROMPT,
                 symbol=symbol,
                 news_items = news_items

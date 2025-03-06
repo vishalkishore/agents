@@ -3,7 +3,7 @@ from typing import List, Tuple, Dict, Type
 import json
 import logging
 from core.logging import log_exception
-from services.gemini import GeminiService
+from services.llm import GeminiService, ChatGPTService
 from agents.base import BaseAgent
 from agents.technical import TechnicalAgent
 from agents.sentiment import SentimentAgent
@@ -15,7 +15,7 @@ from prompts.prompts import AGENT_SELECTOR_PROMPT
 class AgentSelector:
     def __init__(self):
         self.logger = logging.getLogger("AgentSelector")
-        self.gemini = GeminiService()
+        self.llm = ChatGPTService()
         self._initialize_agents()
 
     def _initialize_agents(self):
@@ -37,7 +37,7 @@ class AgentSelector:
     async def select_agents(self, query: str) -> Tuple[List[BaseAgent], str]:
         try:
             prompt = self._build_selection_prompt(query)
-            response_text = await self.gemini.analyze(prompt)
+            response_text = await self.llm.analyze(prompt)
             # Parse the response
             try:
                 response = json.loads(response_text)

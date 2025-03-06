@@ -100,7 +100,7 @@ class TechnicalAgent(BaseAgent):
         return 100 - (100 / (1 + rs))
 
     async def _analyze_data(self, df: pd.DataFrame, symbol: str) -> str:
-        return await self.gemini.analyze(
+        return await self._query_llm(
             TECHNICAL_ANALYSIS_PROMPT,
             symbol=symbol,
             data=df.tail(30).describe().to_string()

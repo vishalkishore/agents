@@ -7,8 +7,11 @@ load_dotenv()
 
 class Settings(BaseSettings):
     ALPHA_VANTAGE_KEY: str = os.getenv("ALPHA_VANTAGE_KEY")
-    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY")
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY","")
+    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY","")
     LOG_LEVEL: str = "INFO"
+
+    LLM_PIORITY: List[str] = ["OPENAI","GEMINI"]
 
     REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
     REDIS_PORT: int = int(os.getenv("REDIS_PORT", 6379))
