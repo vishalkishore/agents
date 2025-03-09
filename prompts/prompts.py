@@ -159,3 +159,19 @@ DO NOT:
 
 Focus on providing actionable understanding rather than predictions.
 """
+FUNDAMENTAL_PROMPT = """
+Perform a detailed comprehensive **fundamental analysis** of the company {symbol} based exclusively on the following data {company_data}
+Focus on the following aspects
+- Financial Health
+- Valuation
+- Economic Indicators
+- Growth Potential
+
+DO NOT:
+- Use any data other than the one provided by me
+- Make investment recommendations
+- Do not speculat beyond the data given by me
+- Do Not Fabricate Data or Assumptions
+
+Provide a detailed report summarizing your findings in each of these areas, along with actionable insights about the stocks potential for growth or decline.”
+"""
