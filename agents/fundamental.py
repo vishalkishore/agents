@@ -26,17 +26,11 @@ class FundamentalAgent(BaseAgent):
                 )
             
             analysis = await self._query_llm(
-                NEWS_SENTIMENT_PROMPT,
+                FUNDAMENTAL_PROMPT,
                 symbol=symbol,
                 #add all the other things that need to be added to prompt
                 company_data = data.to_string()
             )
-
-            #sentiment.py se pura ka pura chapa hua hai ,don't know exactly why it is needed assumed ki need hogi isliye daal diya hai
-            self.logger.info(f"In sleep mode for 5 seconds")
-            import asyncio
-            await asyncio.sleep(5)
-            self.logger.info(f"Awaked from sleep mode")
 
             self.adjust_confidence(True)
 

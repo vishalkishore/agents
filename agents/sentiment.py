@@ -32,11 +32,6 @@ class SentimentAgent(BaseAgent):
                 symbol=symbol,
                 news_items = news_items
             )
-
-            self.logger.info(f"In sleep mode for 5 seconds")
-            import asyncio
-            await asyncio.sleep(5)
-            self.logger.info(f"Awaked from sleep mode")
             
             self.adjust_confidence(True)
             return AgentResponse(
