@@ -159,3 +159,31 @@ DO NOT:
 
 Focus on providing actionable understanding rather than predictions.
 """
+
+#fundamental prompt mai valuation wale part mai industry averages and competitors metrics kisi api se call karke feed karne padenge,when this prompt is directly given to gpt woh assumed data nikal raha hai which might be wrong ,better to provide such data ourselves
+
+FUNDAMENTAL_PROMPT = """
+Perform a detailed comprehensive **fundamental analysis** of the company {symbol} based exclusively on the following data {company_data}
+Focus on the following aspects
+- Financial Health
+    •	Analyze key financial metrics such as revenue growth, earnings per share (EPS), profit margins, return on equity (ROE), and debt-to-equity ratio.
+	•	Examine the balance sheet, income statement, and cash flow statement for insights into liquidity, solvency, and operational efficiency.
+- Valuation
+    •	Calculate and interpret valuation ratios like Price-to-Earnings (P/E), Price-to-Book (P/B), and Dividend Yield.
+	•	Compare these metrics to industry averages or competitors to assess whether the stock is overvalued or undervalued.
+- Economic Indicators
+    •	Assess how broader economic factors such as interest rates, inflation, and GDP growth impact the company’s performance.
+- Growth Potential
+	•	Examine historical trends in revenue and earnings growth and assess future growth potential based on strategic initiatives or investments in innovation.
+DO NOT:
+- Use any data other than the one provided by me
+- Make investment recommendations
+- Do not speculat beyond the data given by me
+- Do Not Fabricate Data or Assumptions
+- Do not perform technical analysis or reference external sources
+- Refrain from using vague or generic statements without backing them up
+
+Provide a detailed report summarizing your findings in each of these areas, along with actionable insights about the stocks potential for growth or decline.”
+"""
+
+

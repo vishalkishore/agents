@@ -3,9 +3,6 @@ from typing import Any, Dict
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
 from services.cache import CacheService
-import pandas as pd
-from agents.base import BaseAgent
-from core.schemas import AgentResponse
 from core.logging import log_execution
 from prompts.prompts import TECHNICAL_ANALYSIS_PROMPT
 
