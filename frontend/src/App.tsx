@@ -49,7 +49,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex">
-      <div className="w-2/3 h-screen">
+      <div className="w-4/5 h-screen">
         {/* Trading View Chart */}
         
         <div className="h-full bg-gray-800">
@@ -58,7 +58,7 @@ function App() {
       </div>
       
       {/* Chat Interface */}
-      <div className="w-1/3 h-screen bg-gray-800 flex flex-col">
+      <div className="w-1/5 h-screen bg-gray-800 flex flex-col p-4">
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto">
           {messages.map((message, index) => (
