@@ -34,3 +34,5 @@ htmlcov/
 
 # Docker volumes
 redis_data/
+
+ignore/
