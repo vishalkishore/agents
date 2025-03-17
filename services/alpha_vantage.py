@@ -16,7 +16,11 @@ class AlphaVantageService:
     async def fetch(self, symbol: str, function: str, extra_params: Optional[Dict] = None) -> Optional[Dict]:
         try:
             self.logger.info(f"Fetching {function} data for {symbol}")
-            cache_key = self.cache.build_key("alphavantage", symbol, function)
+            cache_key_parts = ["alphavantage", symbol, function]
+            if extra_params:
+                for key in sorted(extra_params.keys()):
+                    cache_key_parts.append(f"{key}_{extra_params[key]}")
+            cache_key = self.cache.build_key(*cache_key_parts)
 
             cached_data = await self.cache.get(cache_key)
             if cached_data:

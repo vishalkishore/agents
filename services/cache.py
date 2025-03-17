@@ -4,6 +4,7 @@ import logging
 from typing import Optional, Any
 from config.settings import settings
 from core.logging import log_exception
+from collections import OrderedDict
 
 class CacheService:
     def __init__(self):
@@ -17,6 +18,13 @@ class CacheService:
                 password=settings.REDIS_PASSWORD,
                 decode_responses=True
             )
+        self.default_ttl = settings.CACHE_TTL
+        self.ttl_mapping = OrderedDict([
+            ("TIME_SERIES_INTRADAY", 300),
+            ("TIME_SERIES_DAILY", 86400),
+            ("alphavantage", 3600),
+        ])
+
 
     async def get(self, key: str) -> Optional[Any]:
         if not self.enabled:
@@ -36,7 +44,13 @@ class CacheService:
             return False
             
         try:
-            ttl = ttl or settings.CACHE_TTL
+            if ttl is None:
+                for cache_type, cache_ttl in self.ttl_mapping.items():
+                    if cache_type in key:
+                        ttl = cache_ttl
+                        break
+                else:
+                    ttl = self.default_ttl
             value_str = json.dumps(value,default=str)
             return self.redis.setex(key, ttl, value_str)
         except Exception as e:
