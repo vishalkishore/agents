@@ -15,7 +15,7 @@ from prompts.prompts import AGENT_SELECTOR_PROMPT
 class AgentSelector:
     def __init__(self):
         self.logger = logging.getLogger("AgentSelector")
-        self.llm = ChatGPTService()
+        self.llms = self._initialize_llms()
         self._initialize_agents()
 
     def _initialize_agents(self):
@@ -34,10 +34,29 @@ class AgentSelector:
             if settings.AGENT_CONFIGS[name]["enabled"]
         }
 
+    def _initialize_llms(self):
+        llm_instances = []
+        for llm in settings.LLM_PIORITY:
+            if llm == "OPENAI":
+                llm_instances.append(ChatGPTService())
+            elif llm == "GEMINI":
+                llm_instances.append(GeminiService())
+        return llm_instances
+    
+    async def _query_llm(self, query: str, **kwargs) -> str:
+        for llm in self.llms:
+            try:
+                self.logger.info(f"Querying LLM: {llm.__class__.__name__}")
+                response = await llm.analyze(query, **kwargs)
+                if response:
+                    return response
+            except Exception as e:
+                log_exception(self.logger, e) 
+
     async def select_agents(self, query: str) -> Tuple[List[BaseAgent], str]:
         try:
             prompt = self._build_selection_prompt(query)
-            response_text = await self.llm.analyze(prompt)
+            response_text = await self._query_llm(prompt)
             # Parse the response
             try:
                 response = json.loads(response_text)
