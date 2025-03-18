@@ -13,3 +13,6 @@ app.include_router(analysis.router, prefix="/api")
 app.include_router(healthcheck.router, prefix="/api")
 app.include_router(fetch_intraday.router,prefix="/api")
 app.include_router(fetch_daily.router, prefix="/api")
+
+app.include_router(fetch_intraday.ws_router, prefix="/ws")
+app.include_router(fetch_daily.ws_router, prefix="/ws")
