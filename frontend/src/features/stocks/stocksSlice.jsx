@@ -3,8 +3,14 @@ import { STOCKS } from '../../constants';
 
 const initialState = {
   availableStocks: STOCKS,
+  currentStockMetaData: {
+    symbol: 'AAPL',
+    name: 'Apple Inc.',
+    price: '205.78',
+    change: '+2.35%',
+  },
   selectedStock: STOCKS[0],
-  chartData: []
+  chartData: [],
 };
 
 export const stocksSlice = createSlice({
@@ -16,10 +22,15 @@ export const stocksSlice = createSlice({
     },
     setChartData: (state, action) => {
       state.chartData = action.payload;
-    }
-  }
+    },
+    setCurrentStockMetaData: (state, action) => {
+      if (state.chartData.length > 0) {
+        state.currentStockMetaData = action.payload;
+      }
+    },
+  },
 });
 
-export const { setSelectedStock, setChartData } = stocksSlice.actions;
+export const { setSelectedStock, setChartData, setCurrentStockMetaData } = stocksSlice.actions;
 
 export default stocksSlice.reducer;

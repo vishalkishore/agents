@@ -3,7 +3,7 @@ import logging
 from core.schemas import AgentResponse
 from core.logging import log_exception
 from services.llm import GeminiService, ChatGPTService
-from prompts.prompts import EXPLAIN_PROMPT, EXPLAIN_SYSTEM_PROMPT
+from prompts.prompts import EXPLAIN_USER_PROMPT, EXPLAIN_SYSTEM_PROMPT
 import re
             
 class ExplainabilityEngine:
@@ -11,13 +11,13 @@ class ExplainabilityEngine:
         self.logger = logging.getLogger("ExplainabilityEngine")
         self.llm = ChatGPTService()
 
-    async def explain(self, results: List[AgentResponse]) -> str:
+    async def explain(self, results: List[AgentResponse], user_query: str) -> str:
         try:
             results_str = ""
             for res in results:
                 results_str += f"{res.agent_name} ({res.confidence:.2f}): {str(res.result)[:200]}\n"
         
-            explanation = await self.llm.analyze(EXPLAIN_PROMPT,system_prompt=EXPLAIN_SYSTEM_PROMPT,results=results_str) 
+            explanation = await self.llm.analyze(EXPLAIN_USER_PROMPT,system_prompt=EXPLAIN_SYSTEM_PROMPT,results=results_str,user_query=user_query,symbol=None) 
             explanation = re.sub(
             r'<card>(.*?)</card>', 
             r'<div class="card">\1</div>', 

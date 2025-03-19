@@ -4,7 +4,7 @@ from agents.base import BaseAgent
 from core.schemas import AgentResponse
 from services.cache import CacheService
 from core.logging import log_execution
-from prompts.prompts import TECHNICAL_ANALYSIS_PROMPT
+from prompts.prompts import TECHNICAL_USER_PROMPT, TECHNICAL_SYSTEM_PROMPT
 
 class TechnicalAgent(BaseAgent):
     def __init__(self):
@@ -38,7 +38,7 @@ class TechnicalAgent(BaseAgent):
                 )
 
             df = self._prepare_dataframe(data)
-            analysis = await self._analyze_data(df, symbol)
+            analysis = await self._analyze_data(df, symbol,query)
             
             self.adjust_confidence(True)
             response =  AgentResponse(
@@ -96,9 +96,11 @@ class TechnicalAgent(BaseAgent):
         rs = avg_gain / avg_loss
         return 100 - (100 / (1 + rs))
 
-    async def _analyze_data(self, df: pd.DataFrame, symbol: str) -> str:
+    async def _analyze_data(self, df: pd.DataFrame, symbol: str, user_query: str) -> str:
         return await self._query_llm(
-            TECHNICAL_ANALYSIS_PROMPT,
+            TECHNICAL_USER_PROMPT,
+            system_prompt=TECHNICAL_SYSTEM_PROMPT,
             symbol=symbol,
-            data=df.tail(30).describe().to_string()
+            data=df.tail(30).describe().to_string(),
+            user_query = user_query
         )

@@ -20,9 +20,3 @@ export const TIMEFRAMES = [
     { symbol: 'AMZN', name: 'Amazon.com Inc.', price: '185.67', change: '+0.45%', sector: 'Consumer Cyclical' },
   ];
   
-  export const SAMPLE_MESSAGES = [
-    { id: 1, user: 'TradeBot', text: 'AAPL showing strong buy signals based on recent volume patterns.', time: '10:45 AM' },
-    { id: 2, user: 'You', text: 'What indicators would you recommend for volatile markets?', time: '10:47 AM' },
-    { id: 3, user: 'TradeBot', text: 'For volatile markets, consider using Bollinger Bands (BB) and RSI together to identify potential reversal points.', time: '10:48 AM' },
-  ];
-  

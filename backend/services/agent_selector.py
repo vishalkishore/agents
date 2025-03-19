@@ -7,6 +7,7 @@ from services.llm import GeminiService, ChatGPTService
 from agents.base import BaseAgent
 from agents.technical import TechnicalAgent
 from agents.sentiment import SentimentAgent
+from agents.fundamental import FundamentalAgent
 from agents.risk import RiskAgent
 from agents.portfolio import PortfolioAgent
 from config.settings import settings
@@ -24,7 +25,8 @@ class AgentSelector:
             "TechnicalAgent": TechnicalAgent,
             "SentimentAgent": SentimentAgent,
             "RiskAgent": RiskAgent,
-            "PortfolioAgent": PortfolioAgent
+            "PortfolioAgent": PortfolioAgent,
+            "FundamentalAgent": FundamentalAgent,
         }
         
         # Filter out disabled agents from settings

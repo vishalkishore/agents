@@ -15,7 +15,7 @@ const NavBar = () => {
     <div className="flex items-center justify-between px-3 py-1.5 bg-slate-900 border-b border-slate-800">
       <div className="flex items-center gap-2">
         <LineChart className="w-5 h-5 text-blue-500" />
-        <h1 className="text-base font-bold">TradePro</h1>
+        <h1 className="text-base font-bold">Rockview</h1>
       </div>
       
       <div className="flex items-center gap-2">

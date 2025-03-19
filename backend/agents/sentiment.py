@@ -2,7 +2,7 @@ from typing import Any, Dict
 from agents.base import BaseAgent
 from core.schemas import AgentResponse
 from core.logging import log_execution
-from prompts.prompts import SYSTEM_NEWS_SENTIMENT_PROMPT, NEWS_SENTIMENT_PROMPT
+from prompts.prompts import NEWS_SENTIMENT_SYSTEM_PROMPT, NEWS_SENTIMENT_USER_PROMPT
 import time
 
 class SentimentAgent(BaseAgent):
@@ -28,8 +28,8 @@ class SentimentAgent(BaseAgent):
                         for item in data["feed"][:5]]
             
             analysis = await self._query_llm(
-                NEWS_SENTIMENT_PROMPT,
-                system_prompt=SYSTEM_NEWS_SENTIMENT_PROMPT,
+                NEWS_SENTIMENT_USER_PROMPT,
+                system_prompt=NEWS_SENTIMENT_SYSTEM_PROMPT,
                 symbol=symbol,
                 news_items="\n".join(news_items),
                 user_query=query

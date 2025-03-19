@@ -17,8 +17,8 @@ const Citation = ({ href, children }) => {
 
 
 const MessageItem = ({ message }) => {
-  const isBot = message.user === 'TradeBot';
-
+  const isBot = message.session_id === 'TradeBot';
+  const player = message.session_id;
   const components = {
     // Convert div with class "card" to our Card component
     div: ({ node, ...props }) => {
@@ -36,10 +36,10 @@ const MessageItem = ({ message }) => {
   };
 
   return (
-    <div className={`p-1.5 rounded-lg text-sm ${message.user === 'You' ? 'bg-blue-900 ml-4' : 'bg-slate-800 mr-4'}`}>
+    <div className={`p-1.5 rounded-lg text-sm ${player === 'You' ? 'bg-blue-900 ml-4' : 'bg-slate-800 mr-4'}`}>
       <div className="flex justify-between items-center mb-0.5">
-        <span className={`font-medium ${message.user === 'TradeBot' ? 'text-green-400' : 'text-blue-400'}`}>
-          {message.user}
+        <span className={`font-medium ${player === 'TradeBot' ? 'text-green-400' : 'text-blue-400'}`}>
+          {player}
         </span>
         <span className="text-slate-400 text-xs">{message.time}</span>
       </div>

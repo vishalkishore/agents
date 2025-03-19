@@ -4,7 +4,7 @@ import { BarChart } from 'lucide-react';
 import TimeframeSelector from './TimeframeSelector';
 
 const StockDetails = ({ onAnalyzeClick, isAnalyzing }) => {
-  const { selectedStock } = useSelector(state => state.stocks);
+  const { selectedStock, currentStockMetaData } = useSelector(state => state.stocks);
 
   return (
     <div className="mb-1 flex justify-between items-center">
@@ -14,9 +14,9 @@ const StockDetails = ({ onAnalyzeClick, isAnalyzing }) => {
           <span className="text-slate-400 text-sm">{selectedStock.name}</span>
         </div>
         <div className="flex gap-2 items-center">
-          <span className="text-sm">${selectedStock.price}</span>
-          <span className={`text-sm ${selectedStock.change.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
-            {selectedStock.change}
+          <span className="text-sm">${currentStockMetaData.price}</span>
+          <span className={`text-sm ${currentStockMetaData.change.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
+            {currentStockMetaData.change}
           </span>
         </div>
       </div>

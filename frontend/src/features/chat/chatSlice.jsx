@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { SAMPLE_MESSAGES } from '../../constants';
 
 const initialState = {
   chatOpen: true,
-  messages: SAMPLE_MESSAGES,
+  messages: [],
   newMessage: ''
 };
 

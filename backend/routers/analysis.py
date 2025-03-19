@@ -34,7 +34,7 @@ async def process_query(query: UserQuery):
         processed_results = await aggregator.aggregate(results)
 
         # Generate explanation
-        explanation = await explainer.explain(processed_results)
+        explanation = await explainer.explain(processed_results,user_query=query.text)
 
         return ProcessedResponse(
             results=results,

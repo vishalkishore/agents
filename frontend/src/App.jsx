@@ -7,7 +7,7 @@ import StockDetails from './components/StockDetails';
 import AnalysisPopup from './components/AnalysisPopup';
 import ChatPanel from './components/ChatPanel';
 import { fetchStockData } from './features/stocks/stocksAPI';
-import { setChartData } from './features/stocks/stocksSlice';
+import { setChartData, setCurrentStockMetaData } from './features/stocks/stocksSlice';
 import { startAnalyzing, stopAnalyzing, setPrediction, setShowAnalysisPopup } from './features/analysis/analysisSlice';
 import { addMessage } from './features/chat/chatSlice';
 import { generatePrediction } from './utils/helpers';
@@ -26,7 +26,25 @@ function App() {
       const loadData = async () => {
         try {
           const data = await fetchStockData(selectedStock.symbol, selectedTimeframe.value);
-          dispatch(setChartData(data));
+          
+          if (data.length > 0) {
+            dispatch(setChartData(data));
+      
+            const latestClose = data[data.length - 1].close;
+            const previousClose = data.length > 1 ? data[data.length - 2].close : latestClose;
+      
+      
+            const priceChange = latestClose - previousClose;
+            const percentageChange = previousClose !== 0 ? (priceChange / previousClose) * 100 : 0;
+            const formattedChange = `${priceChange >= 0 ? '+' : ''}${priceChange.toFixed(2)} (${percentageChange.toFixed(2)}%)`;
+      
+            dispatch(setCurrentStockMetaData({
+              symbol: selectedStock.symbol,
+              name: selectedStock.name,
+              price: latestClose.toFixed(2),
+              change: formattedChange
+            }));
+          }
         } catch (error) {
           console.error('Error loading stock data:', error);
         }

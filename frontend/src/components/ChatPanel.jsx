@@ -20,8 +20,12 @@ const ChatPanel = () => {
         text: newMessage,
         time: new Date().toISOString(),
       };
+
       
-      dispatch(addMessage(newMsg));
+      
+      dispatch(addMessage({ ...newMsg, time: new Date(newMsg.time).toLocaleString([],
+         { hour: '2-digit', minute: '2-digit' }) 
+        }));
       dispatch(setNewMessage(''));
       
       const response = await fetch('http://localhost:8000/api/query', {
@@ -38,23 +42,14 @@ const ChatPanel = () => {
       const data = await response.json();
       
       const botResponse = {
-        id: messages.length + 2,
+        id: nanoid(),
         user: 'TradeBot',
-        text: data.explanation || 'No response received.', // Adjust based on `ProcessedResponse`
+        session_id: 'TradeBot',
+        text: data.explanation || 'No response received.',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
 
       dispatch(addMessage(botResponse));
-      // // Simulate bot response
-      // setTimeout(() => {
-      //   const botResponse = {
-      //     id: messages.length + 2,
-      //     user: 'TradeBot',
-      //     text: `Analysis for ${selectedStock.symbol}: Currently analyzing the ${selectedTimeframe.label} chart patterns.`,
-      //     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      //   };
-      //   dispatch(addMessage(botResponse));
-      // }, 1000);
     }
   };
 

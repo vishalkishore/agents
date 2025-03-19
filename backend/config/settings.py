@@ -44,7 +44,12 @@ class Settings(BaseSettings):
             "class": "PortfolioAgent",
             "enabled": True,
             "confidence_threshold": 0.5
-        }
+        },
+        "FundamentalAgent": {
+            "class": "FundamentalAgent",
+            "enabled": True,
+            "confidence_threshold": 0.5
+        },
     }
 
 settings = Settings()
