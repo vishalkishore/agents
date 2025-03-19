@@ -22,7 +22,7 @@ function App() {
   const { messages } = useSelector(state => state.chat);
 
   useEffect(() => {
-    if (selectedTimeframe?.value !== '1D' && selectedTimeframe?.value !== '1W') {
+    if (true) {
       const loadData = async () => {
         try {
           const data = await fetchStockData(selectedStock.symbol, selectedTimeframe.value);

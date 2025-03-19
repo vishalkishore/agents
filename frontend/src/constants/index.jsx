@@ -4,7 +4,7 @@ export const TIMEFRAMES = [
     { label: '15m', value: '15' },
     { label: '30m', value: '30' },
     { label: '1H', value: '60' },
-    { label: '1D', value: '3600' },
+    { label: '1D', value: '1440' },
   ];
   
   export const AVAILABLE_INDICATORS = [
