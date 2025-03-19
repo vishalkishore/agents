@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from '@reduxjs/toolkit'
 import { ChevronDown, Send } from 'lucide-react';
 import { toggleChat, setNewMessage, addMessage } from '../features/chat/chatSlice';
 import MessageItem from './MessageItem';
@@ -10,33 +11,55 @@ const ChatPanel = () => {
   const { selectedStock } = useSelector(state => state.stocks);
   const { selectedTimeframe } = useSelector(state => state.timeframe);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (newMessage.trim()) {
       const newMsg = {
-        id: messages.length + 1,
-        user: 'You',
+        user_id: nanoid(),
+        session_id: 'You',
+        selectedStock: selectedStock.symbol,
         text: newMessage,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        time: new Date().toISOString(),
       };
       
       dispatch(addMessage(newMsg));
       dispatch(setNewMessage(''));
       
-      // Simulate bot response
-      setTimeout(() => {
-        const botResponse = {
-          id: messages.length + 2,
-          user: 'TradeBot',
-          text: `Analysis for ${selectedStock.symbol}: Currently analyzing the ${selectedTimeframe.label} chart patterns.`,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-        dispatch(addMessage(botResponse));
-      }, 1000);
+      const response = await fetch('http://localhost:8000/api/query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newMsg),
+      });
+      console.log("Raw response:", response);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      
+      const botResponse = {
+        id: messages.length + 2,
+        user: 'TradeBot',
+        text: data.explanation || 'No response received.', // Adjust based on `ProcessedResponse`
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      dispatch(addMessage(botResponse));
+      // // Simulate bot response
+      // setTimeout(() => {
+      //   const botResponse = {
+      //     id: messages.length + 2,
+      //     user: 'TradeBot',
+      //     text: `Analysis for ${selectedStock.symbol}: Currently analyzing the ${selectedTimeframe.label} chart patterns.`,
+      //     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      //   };
+      //   dispatch(addMessage(botResponse));
+      // }, 1000);
     }
   };
 
   return (
-    <div className="w-64 bg-slate-900 border-l border-slate-800 flex flex-col transition-all duration-300 overflow-hidden z-30">
+    <div className="w-100 bg-slate-900 border-l border-slate-800 flex flex-col transition-all duration-300 overflow-hidden z-30">
       <div className="flex justify-between items-center px-2 py-1 border-b border-slate-800">
         <h3 className="font-medium text-sm">Trade Chat</h3>
         <button 

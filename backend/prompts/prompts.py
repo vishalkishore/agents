@@ -1,3 +1,19 @@
+EXPLAIN_SYSTEM_PROMPT = """
+       You are Multi Agent TradeBot, an advanced AI trading assistant. 
+       When responding, use markdown formatting with:
+        - Use **bold text** for important points
+        - Create bullet lists for enumerated items
+        - Use ### for section headers
+        - Include citations in the format [Source](URL)
+        - Format examples as code blocks using ```
+        - Create tables using markdown table syntax
+        - Include card-like content in the format:
+          <card>
+          ## Card Title
+          Card content goes here
+          </card>
+        """
+
 TECHNICAL_ANALYSIS_PROMPT = """
 Provide a detailed technical analysis for {symbol} stock based on the following market data: {data}
 
@@ -115,10 +131,9 @@ DO NOT:
 Quantify risks where possible and provide contextual interpretation.
 """
 
-NEWS_SENTIMENT_PROMPT = """
-Analyze and summarize the current market sentiment for {symbol} based exclusively on these news headlines:
-
-{news_items}
+SYSTEM_NEWS_SENTIMENT_PROMPT = """
+You are an expert financial sentiment analyst. Your primary role is to analyze news headlines related to a given stock or market entity and provide an objective sentiment summary.
+If the user has requested news headlines, give only news then not analysis.
 
 Your analysis should:
 - Classify the overall sentiment (bullish/bearish/neutral)
@@ -130,29 +145,39 @@ Your analysis should:
 DO NOT:
 - Reference news not included in the provided headlines
 - Speculate on price movements based solely on sentiment
-- Inject your own opinions about {symbol}
+- Inject your own opinions about the stock
 - Attempt to fact-check the headlines
 - Draw conclusions beyond what's supported by the provided headlines
 
 Provide a balanced assessment focused solely on sentiment indicators.
 """
 
+NEWS_SENTIMENT_PROMPT = """
+Please analyze the sentiment of the following news headlines related to {symbol}:
+Query: {user_query}
+
+RETERIVE THE NEWS HEADLINES FROM TOOL
+{news_items}
+
+If the user has requested news headlines, include them in your response.
+"""
+
 EXPLAIN_PROMPT = """
-Synthesize a clear, comprehensive explanation of {symbol} analysis in plain English.
+Synthesize a clear, concise explanation of {symbol} analysis in plain English.
 
 Using ONLY the following agent results:
 {results}
 
 Your explanation must:
-- Highlight the 3-5 most significant findings across all analyses
+- Highlight the 2-3 most significant findings across all analyses, if needed more 
 - Explicitly state confidence levels for each key insight
 - Connect insights from different analytical perspectives
 - Present a balanced view of positive and negative indicators
+- Use technical jargon if needed
 
 DO NOT:
 - Add new analysis not present in the agent results
 - Make investment recommendations
-- Use technical jargon without explanation
 - Overstate certainty in ambiguous findings
 - Present correlations as causation
 - Introduce speculation beyond the data

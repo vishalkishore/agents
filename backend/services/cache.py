@@ -20,7 +20,7 @@ class CacheService:
             )
         self.default_ttl = settings.CACHE_TTL
         self.ttl_mapping = OrderedDict([
-            ("TIME_SERIES_INTRADAY", 300),
+            ("TIME_SERIES_INTRADAY", 3600),
             ("TIME_SERIES_DAILY", 86400),
             ("alphavantage", 3600),
         ])

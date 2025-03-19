@@ -13,6 +13,7 @@ logger = logging.getLogger("analysis_router")
 @router.post("/query", response_model=ProcessedResponse)
 @log_execution
 async def process_query(query: UserQuery):
+    logger.info(f"Received request body: {query.dict()}")  
     selector = AgentSelector()
     aggregator = ResultAggregator()
     explainer = ExplainabilityEngine()
