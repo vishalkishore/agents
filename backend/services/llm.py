@@ -54,6 +54,49 @@ class ChatGPTService:
         
         self.model = "gpt-3.5-turbo"
 
+    async def is_financial_query(self, query: str) -> dict:
+        """
+        Determines if a query is appropriate for financial advice.
+        Returns a dictionary with 'is_appropriate' flag and 'reason' if not appropriate.
+        """
+        system_prompt = """
+        You are a financial query classifier. Your job is to determine if the given query 
+        is appropriate for providing financial information or advice. 
+        
+        Classify the query and return a JSON with:
+        1. "is_appropriate": true/false
+        2. "reason": explanation if not appropriate
+        
+        Queries are NOT appropriate if they:
+        - Request specific investment advice ("Should I buy Tesla stock?")
+        - Ask for market timing predictions ("When will Bitcoin crash?")
+        - Request personalized tax advice
+        - Ask for illegal financial activities
+        - Request specific portfolio allocations
+        """
+        
+        try:
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"Query: {query}\nClassify this query."}
+            ]
+            
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                temperature=0.1,
+                max_tokens=300,
+                response_format={"type": "json_object"}
+            )
+            
+            import json
+            result = json.loads(response.choices[0].message.content)
+            return result
+        except Exception as e:
+            # Default to allowing the query if classification fails
+            return {"is_appropriate": True, "reason": f"Error during classification: {str(e)}"}
+
+
     async def analyze(self, prompt: str, system_prompt: str = None, **kwargs) -> str:
         try:
             if kwargs:
