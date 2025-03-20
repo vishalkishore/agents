@@ -3,6 +3,7 @@ from core.logging import setup_logging
 from routers import analysis
 from routers import healthcheck
 from routers import fetch_intraday, fetch_daily
+from routers import prediction
 from config.settings import settings
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -23,6 +24,7 @@ app.include_router(analysis.router, prefix="/api")
 app.include_router(healthcheck.router, prefix="/api")
 app.include_router(fetch_intraday.router,prefix="/api")
 app.include_router(fetch_daily.router, prefix="/api")
+app.include_router(prediction.router, prefix="/api")
 
 app.include_router(fetch_intraday.ws_router, prefix="/ws")
 app.include_router(fetch_daily.ws_router, prefix="/ws")

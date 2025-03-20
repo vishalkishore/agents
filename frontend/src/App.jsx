@@ -54,25 +54,29 @@ function App() {
     }
   }, [dispatch, selectedStock, selectedTimeframe]);
 
-  const handleAnalyzeClick = () => {
+  const handleAnalyzeClick = async () => {
     dispatch(startAnalyzing());
     
-    // Simulate analysis process
-    setTimeout(() => {
-      const prediction = generatePrediction(selectedStock, selectedTimeframe);
-      dispatch(setPrediction(prediction));
-      dispatch(stopAnalyzing());
-      dispatch(setShowAnalysisPopup(true));
-      
-      // Add analysis to chat
-      const analysisMessage = {
-        id: messages.length + 3,
-        user: 'TradeBot',
-        text: `Analysis complete for ${selectedStock.symbol}: ${prediction.trend.toUpperCase()} outlook with ${prediction.confidence}% confidence. Target price: $${prediction.targetPrice} within this ${selectedTimeframe.label} timeframe.`,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      dispatch(addMessage(analysisMessage));
-    }, 2000);
+    generatePrediction(selectedStock, selectedTimeframe)
+            .then(prediction => {
+                dispatch(setPrediction(prediction));
+                dispatch(stopAnalyzing());
+                dispatch(setShowAnalysisPopup(true));
+
+                const analysisMessage = {
+                    id: messages.length + 3,
+                    user: 'TradeBot',
+                    text: `Analysis complete for ${selectedStock.symbol}: ${prediction.trend.toUpperCase()} outlook with ${prediction.confidence}% confidence. Target price: $${prediction.targetPrice} within this ${selectedTimeframe.label} timeframe.`,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+
+                // dispatch(addMessage(analysisMessage));
+            })
+            .catch(error => {
+                console.error("Error generating prediction:", error);
+                dispatch(stopAnalyzing());
+            });
+
   };
 
   return (
