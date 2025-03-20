@@ -83,7 +83,7 @@ class AgentSelector:
         except Exception as e:
             log_exception(self.logger, e, "Agent selection failed")
             # Fallback to technical analysis only
-            return [TechnicalAgent()], "IBM"
+            return [TechnicalAgent()], "AAPL"
 
     def _build_selection_prompt(self, query: str) -> str:
         available_agents = list(self.available_agents.keys()) if self.available_agents else []
